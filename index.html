@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세피리아 랜덤런 조작기</title>
+    <style>
+        /* --- 다크 테마 & 스타일 정의 --- */
+        :root {
+            /* 컬러 팔레트 (Dark Theme) */
+            --main-bg: #121212;         /* 전체 배경 (아주 어두운 회색) */
+            --card-bg: #1e1e1e;         /* 카드 배경 (어두운 회색) */
+            --item-bg: #2c2c2c;         /* 아이템 표시줄 배경 */
+            --border-color: #333333;    /* 테두리 색상 */
+            --text-main: #e0e0e0;       /* 기본 글자색 (밝은 회색) */
+            --text-sub: #aaaaaa;        /* 보조 글자색 */
+            
+            --accent-color: #4db6ac;    /* 강조색 (청록색 계열) */
+            --btn-primary: #2e7d32;     /* ROLL 버튼 (차분한 녹색) */
+            --btn-hover: #43a047;       /* ROLL 버튼 호버 (밝은 녹색) */
+            --btn-delete: #d32f2f;      /* 삭제 버튼 (붉은색) */
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 그림자 */
+        }
+
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            background-color: var(--main-bg);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* --- 상단 헤더 (로고 + 텍스트) 스타일 --- */
+        .header-section {
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            align-items: center;    /* 가로 중앙 정렬 */
+            margin-bottom: 30px;    /* 아래 설정 박스와의 간격 */
+        }
+
+        .top-logo {
+            max-width: 300px;       /* 로고 최대 크기 */
+            height: auto;
+            margin-bottom: 10px;    /* 로고와 글자 사이 간격 */
+        }
+
+        .main-title {
+            font-size: 32px;        /* 글자 크기 */
+            font-weight: bold;      /* 굵게 */
+            color: var(--text-main); /* 다크테마 글자색 적용 */
+            margin: 0;
+            letter-spacing: 1px;    /* 자간을 살짝 넓혀서 고급스럽게 */
+            text-transform: uppercase; /* (선택) 대문자로 변환 */
+        }
+        
+        /* 설정 박스 (상단) */
+        .settings-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+        .setting-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .settings-label {
+            font-weight: bold;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+        
+        /* 체크박스 커스텀 느낌 */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-sub);
+            transition: color 0.2s;
+        }
+        .checkbox-wrapper:hover { color: var(--text-main); }
+        .checkbox-wrapper input {
+            accent-color: var(--accent-color); /* 체크박스 색상 변경 */
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* 콤보 개수 인풋 */
+        .global-combo-input {
+            width: 50px;
+            padding: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            background-color: var(--item-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--accent-color);
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        /* 플레이어 영역 Grid/Flex */
+        .players-area {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+        }
+
+        /* 플레이어 카드 디자인 */
+        .player-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            width: 380px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .player-card:hover {
+            border-color: var(--accent-color); /* 호버 시 테두리 강조 */
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        /* 플레이어 이름 입력창 */
+        .player-name-input {
+            background-color: transparent;
+            color: var(--text-main);
+            border: none;
+            border-bottom: 2px solid var(--border-color);
+            padding: 5px 10px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            width: 180px;
+            transition: border-color 0.3s;
+        }
+        .player-name-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent-color);
+        }
+
+        /* 삭제 버튼 (작고 심플하게) */
+        .btn-delete {
+            position: absolute;
+            right: 0;
+            top: 5px;
+            background: transparent;
+            color: var(--text-sub);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+        .btn-delete:hover {
+            color: #fff;
+            background-color: var(--btn-delete);
+            border-color: var(--btn-delete);
+        }
+
+        /* 아이템 줄 (Row) */
+        .item-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            min-height: 50px;
+        }
+        .item-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-sub);
+            width: 50px;
+        }
+        .item-display {
+            display: flex;
+            align-items: center;
+            background-color: var(--item-bg);
+            border-radius: 8px;
+            padding: 6px;
+            flex-grow: 1;
+            margin-right: 12px;
+            border: 1px solid var(--border-color);
+            min-height: 42px;
+        }
+
+        /* 이미지 스타일 (기본: 무기/의상은 여백 있음) */
+        .item-image {
+            width: 40px;
+            height: 40px;
+            background-color: #383838; /* 이미지 없을 때 배경색 */
+            margin-right: 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            font-size: 10px;
+            flex-shrink: 0;
+            
+            /* 이미지 배치 설정 (기본: 70% 크기) */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 70%; 
+        }
+
+        /* [수정됨] 콤보 영역의 이미지는 여백 없이 꽉 채우기 */
+        [id^="combo-display-"] .item-image {
+            background-size: cover !important; /* 빈칸 없이 꽉 채움 */
+        }
+
+        .item-name {
+            font-size: 15px;
+            color: var(--text-main);
+        }
+        
+        /* 개별 ROLL 버튼 */
+        .btn-roll-small {
+            background-color: var(--btn-primary);
+            color: white;
+            border: none;
+            padding: 0 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            height: 40px;
+            white-space: nowrap;
+            transition: background 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .btn-roll-small:hover { background-color: var(--btn-hover); }
+
+        /* 플레이어 추가 버튼 */
+        .btn-add-player-wrapper {
+            margin-top: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .btn-add-player {
+            font-size: 16px;
+            color: var(--text-sub);
+            background-color: transparent;
+            border: 2px dashed var(--border-color);
+            cursor: pointer;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-add-player:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background-color: rgba(77, 182, 172, 0.05);
+        }
+        
+        /* 하드모드 카드 */
+        .hardmode-card {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color); /* 강조 테두리 */
+            border-radius: 12px;
+            padding: 20px 30px;
+            width: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(77, 182, 172, 0.1); /* 약간의 빛나는 효과 */
+        }
+        .hardmode-label { font-size: 18px; font-weight: bold; color: var(--accent-color); }
+        .hardmode-value { font-size: 28px; font-weight: bold; color: var(--text-main); }
+
+        /* ROLL ALL 버튼 */
+        .btn-roll-all {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20); /* 그라데이션 */
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            border-radius: 50px; /* 둥근 알약 모양 */
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
+            transition: transform 0.1s, box-shadow 0.2s;
+            margin-bottom: 50px;
+        }
+        .btn-roll-all:hover {
+            background: linear-gradient(135deg, #388e3c, #2e7d32);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.6);
+            transform: translateY(-2px);
+        }
+        .btn-roll-all:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <img src="images/logo.png" alt="Random Run Controller" class="top-logo">
+        <h1 class="main-title">세피리아 랜덤런 조작기</h1>
+    </div>
+    <div class="settings-card">
+        <div class="setting-group">
+            <span class="settings-label">'자유' 등장 설정</span>
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="chk-weapon-free" checked> 무기
+            </label>
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="chk-outfit-free" checked> 의상
+            </label>
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="chk-combo-free" checked> 콤보
+            </label>
+        </div>
+        <div style="width: 1px; height: 30px; background: var(--border-color);"></div>
+        <div class="setting-group">
+            <span class="settings-label">콤보 개수</span>
+            <input type="number" id="global-combo-count" class="global-combo-input" value="2" min="1" max="5">
+            <span style="color: var(--text-sub);">개</span>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div id="playersArea" class="players-area">
+        </div>
+        <div class="btn-add-player-wrapper">
+            <button class="btn-add-player" onclick="addPlayer()">+ 플레이어 추가</button>
+        </div>
+    </div>
+
+    <div class="hardmode-card">
+        <div class="hardmode-label">뿌리거둠</div>
+        <div id="hardmodeValue" class="hardmode-value">0</div>
+        <button class="btn-roll-small" onclick="rollHardMode()">Roll</button>
+    </div>
+
+    <button class="btn-roll-all" onclick="rollAll()">Roll All</button>
+
+    <script>
+        // 데이터 정의
+        const data = {
+            weapons: [
+                { id: 1, name: '검과 방패',          img: 'images/weapon-1.png' },
+                { id: 2, name: '강철 대검',          img: 'images/weapon-2.png' },
+                { id: 3, name: '단검',              img: 'images/weapon-3.png' },
+                { id: 4, name: '석궁',              img: 'images/weapon-4.png' },
+                { id: 5, name: '도',                img: 'images/weapon-5.png' },
+                { id: 6, name: '자유',                img: 'images/weapon-6.png' }
+            ],
+            outfits: [
+                { id: 1, name: '분홍 토끼', img: 'images/outfit-1.png' },
+                { id: 2, name: '갑옷을 입은 토끼', img: 'images/outfit-2.png' },
+                { id: 3, name: '갈색 토끼', img: 'images/outfit-3.png' },
+                { id: 4, name: '땋은 머리 토끼', img: 'images/outfit-4.png' },
+                { id: 5, name: '주황색 토끼', img: 'images/outfit-5.png' },
+                { id: 6, name: '빨간망토 토끼', img: 'images/outfit-6.png' },
+                { id: 7, name: '흰색 토끼', img: 'images/outfit-7.png' },
+                { id: 8, name: '날개 귀 토끼', img: 'images/outfit-8.png' },
+                { id: 9, name: '붉은 옷 고양이', img: 'images/outfit-9.png' },
+                { id: 10, name: '붉은 여우', img: 'images/outfit-10.png' },
+                { id: 11, name: '개구리', img: 'images/outfit-11.png' },
+                { id: 12, name: '두더지', img: 'images/outfit-12.png' },
+                { id: 13, name: '수달', img: 'images/outfit-13.png' },
+                { id: 14, name: '하얀 늑대', img: 'images/outfit-14.png' },
+                { id: 15, name: '마법사 토끼', img: 'images/outfit-15.png' },
+                { id: 16, name: '유령', img: 'images/outfit-16.png' },
+                { id: 17, name: '학자 도마뱀', img: 'images/outfit-17.png' },
+                { id: 18, name: '날개 잃은 박쥐', img: 'images/outfit-18.png' },
+                { id: 19, name: '스켈레톤', img: 'images/outfit-19.png' },
+                { id: 20, name: '모험가 토끼', img: 'images/outfit-20.png' },
+                { id: 21, name: '자유', img: 'images/outfit-21.png' }
+            ],
+            combos: [
+                { id: 1, name: '견고', img: 'images/combo-1.png' },
+                { id: 2, name: '그림자', img: 'images/combo-2.png' },
+                { id: 3, name: '빙하', img: 'images/combo-3.png' },
+                { id: 4, name: '호수', img: 'images/combo-4.png' },
+                { id: 5, name: '바람노래', img: 'images/combo-5.png' },
+                { id: 6, name: '신비', img: 'images/combo-6.png' },
+                { id: 7, name: '마법공학', img: 'images/combo-7.png' },
+                { id: 8, name: '얼음무구', img: 'images/combo-8.png' },
+                { id: 9, name: '행성', img: 'images/combo-9.png' },
+                { id: 10, name: '정밀', img: 'images/combo-10.png' },
+                { id: 11, name: '동료', img: 'images/combo-11.png' },
+                { id: 12, name: '잉걸불', img: 'images/combo-12.png' },
+                { id: 13, name: '먹구름', img: 'images/combo-13.png' },
+                { id: 14, name: '수호', img: 'images/combo-14.png' },
+                { id: 15, name: '아카데미', img: 'images/combo-15.png' },
+                { id: 16, name: '태양검', img: 'images/combo-16.png' },
+                { id: 17, name: '자유', img: 'images/combo-17.png' }
+            ]
+        };
+
+        let playerCount = 0;
+
+        // 유틸리티 함수
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        function getRandomUniqueItems(arr, count) {
+            const shuffled = [...arr].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        function getFilteredData(type) {
+            let pool = [];
+            let isFreeIncluded = true;
+
+            if (type === 'weapon') {
+                pool = [...data.weapons];
+                isFreeIncluded = document.getElementById('chk-weapon-free').checked;
+            } else if (type === 'outfit') {
+                pool = [...data.outfits];
+                isFreeIncluded = document.getElementById('chk-outfit-free').checked;
+            } else if (type === 'combo') {
+                pool = [...data.combos];
+                isFreeIncluded = document.getElementById('chk-combo-free').checked;
+            }
+
+            if (!isFreeIncluded) {
+                pool = pool.filter(item => item.name !== '자유');
+            }
+            return pool;
+        }
+
+        // 플레이어 추가
+        function addPlayer() {
+            // [수정됨] 현재 플레이어 수 체크 (최대 4명)
+            const currentPlayers = document.querySelectorAll('.player-card').length;
+            if (currentPlayers >= 4) {
+                alert("플레이어는 최대 4명까지만 추가할 수 있습니다.");
+                return;
+            }
+
+            playerCount++;
+            const playersArea = document.getElementById('playersArea');
+            const playerCard = document.createElement('div');
+            playerCard.className = 'player-card';
+            playerCard.id = `player-${playerCount}`;
+            
+            playerCard.innerHTML = `
+                <div class="player-header">
+                    <input type="text" class="player-name-input" value="플레이어 ${playerCount}">
+                    <button class="btn-delete" onclick="removePlayer(${playerCount})">삭제</button>
+                </div>
+                
+                <div class="item-row">
+                    <div class="item-label">무기</div>
+                    <div class="item-display" id="weapon-display-${playerCount}">
+                        <div class="item-image">이미지</div>
+                        <div class="item-name"></div>
+                    </div>
+                    <button class="btn-roll-small" onclick="rollIndividual(${playerCount}, 'weapon')">Roll</button>
+                </div>
+
+                <div class="item-row">
+                    <div class="item-label">의상</div>
+                    <div class="item-display" id="outfit-display-${playerCount}">
+                        <div class="item-image">이미지</div>
+                        <div class="item-name"></div>
+                    </div>
+                    <button class="btn-roll-small" onclick="rollIndividual(${playerCount}, 'outfit')">Roll</button>
+                </div>
+
+                <div class="item-row">
+                    <div class="item-label">콤보</div>
+                    <div class="item-display" id="combo-display-${playerCount}" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                        <div style="display:flex; align-items:center;">
+                            <div class="item-image">이미지</div><div class="item-name"></div>
+                        </div>
+                         <div style="display:flex; align-items:center;">
+                            <div class="item-image">이미지</div><div class="item-name"></div>
+                        </div>
+                    </div>
+                    <button class="btn-roll-small" onclick="rollIndividual(${playerCount}, 'combo')">Roll</button>
+                </div>
+            `;
+            playersArea.appendChild(playerCard);
+        }
+
+        function removePlayer(id) {
+            const playerCard = document.getElementById(`player-${id}`);
+            if (playerCard) {
+                playerCard.remove();
+            }
+        }
+
+        // 화면 업데이트
+        function updateDisplay(elementId, items) {
+            const displayEl = document.getElementById(elementId);
+            displayEl.innerHTML = '';
+
+            const itemsToShow = Array.isArray(items) ? items : [items];
+
+            itemsToShow.forEach(item => {
+                 const itemDiv = document.createElement('div');
+                 itemDiv.style.display = 'flex';
+                 itemDiv.style.alignItems = 'center';
+                 
+                 let imgStyle = '';
+                 if (item.img) {
+                     imgStyle = `background-image: url('${item.img}'); color: transparent;`;
+                 }
+
+                 itemDiv.innerHTML = `
+                    <div class="item-image" style="${imgStyle}">${item.img ? '' : '이미지'}</div>
+                    <div class="item-name">${item.name}</div>
+                 `;
+                 displayEl.appendChild(itemDiv);
+            });
+        }
+
+        // ROLL 실행 함수들
+        function rollIndividual(playerId, type) {
+            const pool = getFilteredData(type);
+            if (pool.length === 0) return;
+
+            if (type === 'weapon' || type === 'outfit') {
+                const item = pool[getRandomInt(pool.length)];
+                updateDisplay(`${type}-display-${playerId}`, item);
+            } else if (type === 'combo') {
+                const countInput = document.getElementById('global-combo-count');
+                let count = parseInt(countInput.value);
+                if (count < 1) count = 1;
+                if (count > 5) count = 5; // [수정됨] 최대 5개로 제한
+                countInput.value = count;
+                
+                if (count > pool.length) count = pool.length;
+
+                const items = getRandomUniqueItems(pool, count);
+                updateDisplay(`combo-display-${playerId}`, items);
+            }
+        }
+
+        function rollHardMode() {
+            const value = Math.floor(Math.random() * 39);
+            document.getElementById('hardmodeValue').innerText = value;
+        }
+
+        function rollAll() {
+            const players = document.querySelectorAll('.player-card');
+            players.forEach(player => {
+                const idStr = player.id.split('-')[1];
+                const id = parseInt(idStr);
+                rollIndividual(id, 'weapon');
+                rollIndividual(id, 'outfit');
+                rollIndividual(id, 'combo');
+            });
+            rollHardMode();
+        }
+
+        window.onload = function() {
+            addPlayer();
+            addPlayer();
+        };
+    </script>
+</body>
+</html>
