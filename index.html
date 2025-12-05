@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>세피리아 랜덤런 조작기</title>
+    <div class="header-section">
+        <img src="images/logo.png" alt="Random Run Controller" class="top-logo">
+        <h1 class="main-title">세피리아 랜덤런 룰렛</h1>
+        
+        <p class="creator-credit">
+            제작: <a href="https://github.com/chicken-triceps" target="_blank">Chicken-Triceps</a>
+        </p>
+    </div>
     <style>
+        /* --- 폰트 정의 (Galmuri9) --- */
+        @font-face {
+            font-family: 'Galmuri9';
+            src: url('fonts/Galmuri9.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         /* --- 다크 테마 & 스타일 정의 --- */
         :root {
             /* 컬러 팔레트 (Dark Theme) */
@@ -23,7 +38,8 @@
         }
 
         body {
-            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            /* 폰트 적용: Galmuri9 우선 적용 */
+            font-family: 'Galmuri9', 'Apple SD Gothic Neo', sans-serif;
             background-color: var(--main-bg);
             color: var(--text-main);
             display: flex;
@@ -56,6 +72,28 @@
             margin: 0;
             letter-spacing: 1px;    /* 자간을 살짝 넓혀서 고급스럽게 */
             text-transform: uppercase; /* (선택) 대문자로 변환 */
+        }
+
+        /* 제작자 크레딧 스타일 */
+        .creator-credit {
+            font-size: 14px;
+            color: var(--text-sub); /* 보조 글자색 사용 */
+            margin-top: 8px;        /* 제목과의 간격 */
+            margin-bottom: 0;
+        }
+        
+        /* 깃허브 링크 스타일 */
+        .creator-credit a {
+            color: var(--accent-color); /* 포인트 컬러(청록색) 사용 */
+            text-decoration: none;      /* 밑줄 제거 */
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        
+        /* 링크에 마우스 올렸을 때 */
+        .creator-credit a:hover {
+            color: var(--text-main);    /* 밝은 흰색으로 변경 */
+            text-decoration: underline; /* 밑줄 생김 */
         }
         
         /* 설정 박스 (상단) */
@@ -330,10 +368,6 @@
     </style>
 </head>
 <body>
-    <div class="header-section">
-        <img src="images/logo.png" alt="Random Run Controller" class="top-logo">
-        <h1 class="main-title">세피리아 랜덤런 조작기</h1>
-    </div>
     <div class="settings-card">
         <div class="setting-group">
             <span class="settings-label">'자유' 등장 설정</span>
@@ -380,7 +414,7 @@
                 { id: 3, name: '단검',              img: 'images/weapon-3.png' },
                 { id: 4, name: '석궁',              img: 'images/weapon-4.png' },
                 { id: 5, name: '도',                img: 'images/weapon-5.png' },
-                { id: 6, name: '자유',                img: 'images/weapon-6.png' }
+                { id: 6, name: '자유',                img: 'images/free.png' }
             ],
             outfits: [
                 { id: 1, name: '분홍 토끼', img: 'images/outfit-1.png' },
@@ -403,7 +437,7 @@
                 { id: 18, name: '날개 잃은 박쥐', img: 'images/outfit-18.png' },
                 { id: 19, name: '스켈레톤', img: 'images/outfit-19.png' },
                 { id: 20, name: '모험가 토끼', img: 'images/outfit-20.png' },
-                { id: 21, name: '자유', img: 'images/outfit-21.png' }
+                { id: 21, name: '자유', img: 'images/free.png' }
             ],
             combos: [
                 { id: 1, name: '견고', img: 'images/combo-1.png' },
