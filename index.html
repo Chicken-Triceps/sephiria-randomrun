@@ -462,6 +462,61 @@
             transform: translateY(-2px);
         }
 
+        /* --- [추가됨] 아이템 설명 툴팁 스타일 --- */
+        .item-display {
+            position: relative; /* 툴팁 위치 기준점 */
+            overflow: visible;  /* 툴팁이 밖으로 튀어나와도 보이게 */
+        }
+
+        /* 툴팁 박스 */
+        .item-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 110%; /* 아이템 바로 위에 표시 */
+            left: 50%;
+            transform: translateX(-50%); /* 중앙 정렬 */
+            
+            width: 220px; /* 설명창 너비 */
+            background-color: #1a1a1a; /* 아주 어두운 배경 */
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 12px;
+            
+            color: #e0e0e0;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: center;
+            
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 9999; /* 제일 위에 뜨도록 */
+            transition: opacity 0.2s, bottom 0.2s;
+            pointer-events: none; /* 툴팁이 마우스 클릭 방해 안 하도록 */
+            
+            /* 줄바꿈 처리 */
+            white-space: normal; 
+            word-break: keep-all;
+        }
+
+        /* 말풍선 꼬리 (선택사항) */
+        .item-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #444 transparent transparent transparent;
+        }
+
+        /* 마우스 올렸을 때 보이기 */
+        .item-display:hover .item-tooltip {
+            visibility: visible;
+            opacity: 1;
+            bottom: 120%; /* 살짝 위로 올라오면서 등장 */
+        }
+
     </style>
 </head>
 <body>
@@ -554,27 +609,111 @@
                 { id: 6, name: '자유',                img: 'images/free.png' }
             ],
             outfits: [
-                { id: 1, name: '분홍 토끼', img: 'images/outfit-1.png' },
-                { id: 2, name: '갑옷을 입은 토끼', img: 'images/outfit-2.png' },
-                { id: 3, name: '갈색 토끼', img: 'images/outfit-3.png' },
-                { id: 4, name: '땋은 머리 토끼', img: 'images/outfit-4.png' },
-                { id: 5, name: '주황색 토끼', img: 'images/outfit-5.png' },
-                { id: 6, name: '빨간망토 토끼', img: 'images/outfit-6.png' },
-                { id: 7, name: '흰색 토끼', img: 'images/outfit-7.png' },
-                { id: 8, name: '날개 귀 토끼', img: 'images/outfit-8.png' },
-                { id: 9, name: '붉은 옷 고양이', img: 'images/outfit-9.png' },
-                { id: 10, name: '붉은 여우', img: 'images/outfit-10.png' },
-                { id: 11, name: '개구리', img: 'images/outfit-11.png' },
-                { id: 12, name: '두더지', img: 'images/outfit-12.png' },
-                { id: 13, name: '수달', img: 'images/outfit-13.png' },
-                { id: 14, name: '하얀 늑대', img: 'images/outfit-14.png' },
-                { id: 15, name: '마법사 토끼', img: 'images/outfit-15.png' },
-                { id: 16, name: '유령', img: 'images/outfit-16.png' },
-                { id: 17, name: '학자 도마뱀', img: 'images/outfit-17.png' },
-                { id: 18, name: '날개 잃은 박쥐', img: 'images/outfit-18.png' },
-                { id: 19, name: '스켈레톤', img: 'images/outfit-19.png' },
-                { id: 20, name: '모험가 토끼', img: 'images/outfit-20.png' },
-                { id: 21, name: '자유', img: 'images/free.png' }
+                { 
+                    id: 1, name: '분홍 토끼', img: 'images/outfit-1.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">경험치 드롭 +3%</span>'
+                },
+                { 
+                    id: 2, name: '갑옷을 입은 토끼', img: 'images/outfit-2.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">방어력 +10</span><br><span style="color:#ff5252">최대 HP -15</span>'
+                },
+                { 
+                    id: 3, name: '갈색 토끼', img: 'images/outfit-3.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">회피 +12</span><br><span style="color:#ff5252">치명타 확률 -4%</span>'
+                },
+                { 
+                    id: 4, name: '땋은 머리 토끼', img: 'images/outfit-4.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">공격 속도 +7%<br><span style="color:#4caf50">이동 속도 +12%</span><br><span style="color:#ff5252">대시 회복 속도 -20%</span>'
+                },
+                { 
+                    id: 5, name: '주황색 토끼', img: 'images/outfit-5.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">최대 HP +10</span><br><span style="color:#ff5252">최대 MP -15</span>'
+                },
+                { 
+                    id: 6, name: '빨간망토 토끼', img: 'images/outfit-6.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">MP 회복 시 2배 회복</span><br><span style="color:#ff5252">최대 MP -20</span>'
+                },
+                { 
+                    id: 7, name: '흰색 토끼', img: 'images/outfit-7.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">일반 공격 피해 +8%</span><br><span style="color:#ff5252">특수 공격 피해 -5%</span>'
+                },
+                { 
+                    id: 8, name: '날개 귀 토끼', img: 'images/outfit-8.png', 
+                    unlock: '<span style="color:#888">기본 코스튬</span>',
+                    desc: '<span style="color:#4caf50">시작 아이템: 축복</span><br><span style="color:#ff5252">무기 피해량 -10%</span>'
+                },
+                { 
+                    id: 9, name: '붉은 옷 고양이', img: 'images/outfit-9.png', 
+                    unlock: '<span style="color:#888">화염속성 피해 50 달성</span>',
+                    desc: '<span style="color:#4caf50">시작 아이템 : 파이어 볼트<br><span style="color:#4caf50">화염속성 피해 +5</span><br><span style="color:#ff5252">얼음속성 피해 -5</span>'
+                },
+                { 
+                    id: 10, name: '붉은 여우', img: 'images/outfit-10.png', 
+                    unlock: '<span style="color:#888">석판 10개 동시에 보유</span>',
+                    desc: '<span style="color:#4caf50">인벤토리 슬롯 +6</span><br><span style="color:#ff5252">치유량 감소 -50%</span>'
+                },
+                { 
+                    id: 11, name: '개구리', img: 'images/outfit-11.png', 
+                    unlock: '<span style="color:#888">번개속성 피해 50 달성</span>',
+                    desc: '<span style="color:#4caf50">시작 아이템 : 라이트닝 볼트<br><span style="color:#4caf50">번개속성 피해 +5</span><br><span style="color:#ff5252">화염속성 피해 -5</span>'
+                },
+                { 
+                    id: 12, name: '두더지', img: 'images/outfit-12.png', 
+                    unlock: '<span style="color:#888">두더지 300마리 누적 처치</span>',
+                    desc: '<span style="color:#4caf50">시작 아이템 : 금빛 핸드벨<br><span style="color:#4caf50">동료가 입히는 피해량 +10%</span><br><span style="color:#ff5252">방어력 -20</span><br><span style="color:#ff5252">이동속도 -10%</span>'
+                },
+                { 
+                    id: 13, name: '수달', img: 'images/outfit-13.png', 
+                    unlock: '<span style="color:#888">치명타 피해 175% 이상 달성</span>',
+                    desc: '<span style="color:#4caf50">치명타 확률 +9%</span><br><span style="color:#ff5252">이동 속도 -8%</span>'
+                },
+                { 
+                    id: 14, name: '하얀 늑대', img: 'images/outfit-14.png', 
+                    unlock: '<span style="color:#888">라타카 5회 처치</span>',
+                    desc: '<span style="color:#4caf50">무한 대시</span><br><span style="color:#ff5252">대시 무적 비활성화</span>'
+                },
+                { 
+                    id: 15, name: '마법사 토끼', img: 'images/outfit-15.png', 
+                    unlock: '<span style="color:#888">마법으로 적 50마리 처치</span>',
+                    desc: '<span style="color:#4caf50">시작 아이템 : 아이스 볼트<br><span style="color:#4caf50">얼음속성 피해 +5</span><br><span style="color:#ff5252">번개속성 피해 -5</span>'
+                },
+                { 
+                    id: 16, name: '유령', img: 'images/outfit-16.png', 
+                    unlock: '<span style="color:#888">한 모험에서 마법서를 5개 이상 획득</span>',
+                    desc: '<span style="color:#4caf50">시작 아이템 : 파이어 애로우<br><span style="color:#4caf50">마법서가 MP를 소모하지 않음</span><br><span style="color:#ff5252">무기 피해량 -40%</span>'
+                },
+                { 
+                    id: 17, name: '학자 도마뱀', img: 'images/outfit-17.png', 
+                    unlock: '<span style="color:#888">하드 모드 20단계 이상 클리어</span>',
+                    desc: '<span style="color:#4caf50">시작 아이템 : 세렌의 휘갈긴 편지<br><span style="color:#4caf50">무한 MP</span><br><span style="color:#ff5252">최대 HP가 20으로 고정됨</span>'
+                },
+                { 
+                    id: 18, name: '날개 잃은 박쥐', img: 'images/outfit-18.png', 
+                    unlock: '<span style="color:#888">헌혈 이벤트 5회 완료</span>',
+                    desc: '<span style="color:#4caf50">HP 흡수 +5</span><br><span style="color:#ff5252">대시 횟수가 1회로 고정됨</span>'
+                },
+                { 
+                    id: 19, name: '스켈레톤', img: 'images/outfit-19.png', 
+                    unlock: '<span style="color:#888">단일 판에서 잃은 체력 누적 333 달성</span>',
+                    desc: '<span style="color:#4caf50">사망 시 60% 체력으로 부활 (2회)</span><br><span style="color:#ff5252">최대 HP가 50으로 고정됨</span>'
+                },
+                { 
+                    id: 20, name: '모험가 토끼', img: 'images/outfit-20.png', 
+                    unlock: '<span style="color:#888">던그리드 구매</span>',
+                    desc: '<span style="color:#4caf50">대시 횟수 +1<br><span style="color:#4caf50">대시 회복 속도 +10%</span><br><span style="color:#ff5252">마법 가속 -50%</span>'
+                },
+                { 
+                    id: 21, name: '자유', img: 'images/free.png', 
+                    unlock: '<span style="color:#888">해금 조건</span>',
+                    desc: '<span style="color:#4caf50">능력치</span>'
+                }
             ],
             miracles: [
                 { id: 1, name: '결투가', img: 'images/miracle-1.png' },
@@ -765,6 +904,24 @@
                  itemDiv.style.alignItems = 'center';
                  itemDiv.style.width = '100%';
                  
+                 // [수정됨] 툴팁 내용 생성 로직 (해금조건 + 설명 결합)
+                 let tooltipContent = '';
+                 
+                 // unlock이 있으면 추가 (줄바꿈 포함)
+                 if (item.unlock) {
+                     tooltipContent += `<div style="margin-bottom: 8px;">${item.unlock}</div>`;
+                 }
+                 // desc가 있으면 추가
+                 if (item.desc) {
+                     tooltipContent += `<div>${item.desc}</div>`;
+                 }
+
+                 // 내용이 있을 때만 툴팁 div 생성
+                 let tooltipHtml = '';
+                 if (tooltipContent) {
+                     tooltipHtml = `<div class="item-tooltip">${tooltipContent}</div>`;
+                 }
+
                  let imgStyle = '';
                  if (item.img) {
                      imgStyle = `background-image: url('${item.img}'); color: transparent;`;
@@ -773,6 +930,7 @@
                  itemDiv.innerHTML = `
                     <div class="item-image" style="${imgStyle}">${item.img ? '' : '이미지'}</div>
                     <div class="item-name">${item.name}</div>
+                    ${tooltipHtml}
                  `;
                  displayEl.appendChild(itemDiv);
             });
